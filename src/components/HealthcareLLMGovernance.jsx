@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Shield, CheckCircle, FileText, Users, Brain, Database, Settings, Download, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { AlertTriangle, Shield, CheckCircle, FileText, Users, Brain, Database, Download, ExternalLink } from 'lucide-react';
 
 const HealthcareLLMGovernance = () => {
   const [activeTab, setActiveTab] = useState('assessment');
@@ -105,6 +105,37 @@ const HealthcareLLMGovernance = () => {
     }
   ];
 
+  // Generate recommendations function
+  const generateRecommendations = useCallback((score, criticalIssues) => {
+    const recommendations = [];
+    
+    if (criticalIssues > 0) {
+      recommendations.push({
+        priority: 'Critical',
+        text: `Address ${criticalIssues} critical compliance issues immediately`,
+        type: 'error'
+      });
+    }
+    
+    if (score < 60) {
+      recommendations.push({
+        priority: 'High',
+        text: 'Overall governance framework needs significant improvement',
+        type: 'warning'
+      });
+    }
+    
+    if (score < 80) {
+      recommendations.push({
+        priority: 'Medium',
+        text: 'Consider implementing additional safeguards and monitoring',
+        type: 'info'
+      });
+    }
+    
+    return recommendations;
+  }, []);
+
   // Calculate risk score
   useEffect(() => {
     let totalScore = 0;
@@ -135,6 +166,9 @@ const HealthcareLLMGovernance = () => {
             case 'number':
               questionScore = Math.max(0, 100 - (answer * 10)); // Lower error rate = higher score
               break;
+            default:
+              questionScore = 0; // Default case for unknown question types
+              break;
           }
           
           totalScore += (questionScore * category.weight);
@@ -151,37 +185,7 @@ const HealthcareLLMGovernance = () => {
       criticalIssues,
       recommendations: generateRecommendations(finalScore, criticalIssues)
     });
-  }, [assessmentData]);
-
-  const generateRecommendations = (score, criticalIssues) => {
-    const recommendations = [];
-    
-    if (criticalIssues > 0) {
-      recommendations.push({
-        priority: 'Critical',
-        text: `Address ${criticalIssues} critical compliance issues immediately`,
-        type: 'error'
-      });
-    }
-    
-    if (score < 60) {
-      recommendations.push({
-        priority: 'High',
-        text: 'Overall governance framework needs significant improvement',
-        type: 'warning'
-      });
-    }
-    
-    if (score < 80) {
-      recommendations.push({
-        priority: 'Medium',
-        text: 'Consider implementing additional safeguards and monitoring',
-        type: 'info'
-      });
-    }
-    
-    return recommendations;
-  };
+  }, [assessmentData, generateRecommendations]);
 
   const getRiskColor = (score) => {
     if (score >= 80) return 'text-green-600';
@@ -217,6 +221,7 @@ const HealthcareLLMGovernance = () => {
     a.href = url;
     a.download = `healthcare-llm-governance-report-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -298,7 +303,8 @@ const HealthcareLLMGovernance = () => {
                               type="radio"
                               name={question.id}
                               value="true"
-                              onChange={(e) => handleInputChange(question.id, true)}
+                              checked={assessmentData[question.id] === true}
+                              onChange={() => handleInputChange(question.id, true)}
                               className="mr-2"
                             />
                             Yes
@@ -308,7 +314,8 @@ const HealthcareLLMGovernance = () => {
                               type="radio"
                               name={question.id}
                               value="false"
-                              onChange={(e) => handleInputChange(question.id, false)}
+                              checked={assessmentData[question.id] === false}
+                              onChange={() => handleInputChange(question.id, false)}
                               className="mr-2"
                             />
                             No
@@ -317,17 +324,28 @@ const HealthcareLLMGovernance = () => {
                       )}
                       
                       {question.type === 'scale' && (
-                        <input
-                          type="range"
-                          min="1"
-                          max={question.max}
-                          onChange={(e) => handleInputChange(question.id, parseInt(e.target.value))}
-                          className="w-full"
-                        />
+                        <div className="space-y-2">
+                          <input
+                            type="range"
+                            min="1"
+                            max={question.max}
+                            value={assessmentData[question.id] || 1}
+                            onChange={(e) => handleInputChange(question.id, parseInt(e.target.value))}
+                            className="w-full"
+                          />
+                          <div className="flex justify-between text-xs text-gray-500">
+                            <span>1 (Poor)</span>
+                            <span className="font-medium">
+                              Current: {assessmentData[question.id] || 1}
+                            </span>
+                            <span>{question.max} (Excellent)</span>
+                          </div>
+                        </div>
                       )}
                       
                       {question.type === 'select' && (
                         <select
+                          value={assessmentData[question.id] || ''}
                           onChange={(e) => handleInputChange(question.id, e.target.value)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         >
@@ -342,9 +360,12 @@ const HealthcareLLMGovernance = () => {
                         <input
                           type="number"
                           step="0.1"
-                          onChange={(e) => handleInputChange(question.id, parseFloat(e.target.value))}
+                          min="0"
+                          max="100"
+                          value={assessmentData[question.id] || ''}
+                          onChange={(e) => handleInputChange(question.id, parseFloat(e.target.value) || 0)}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                          placeholder={question.unit ? `Enter value in ${question.unit}` : ''}
+                          placeholder={question.unit ? `Enter value in ${question.unit}` : 'Enter value'}
                         />
                       )}
                     </div>
@@ -380,7 +401,7 @@ const HealthcareLLMGovernance = () => {
               </div>
             </div>
 
-            {complianceResults && (
+            {complianceResults && complianceResults.recommendations.length > 0 && (
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Compliance Recommendations</h3>
                 
@@ -402,6 +423,16 @@ const HealthcareLLMGovernance = () => {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {(!complianceResults || complianceResults.recommendations.length === 0) && (
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="text-center py-8">
+                  <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Complete Risk Assessment</h3>
+                  <p className="text-gray-600">Fill out the risk assessment to see compliance recommendations.</p>
                 </div>
               </div>
             )}
@@ -459,7 +490,7 @@ const HealthcareLLMGovernance = () => {
                       'Audit Procedures',
                       'Stakeholder Guidelines'
                     ].map((doc, idx) => (
-                      <div key={idx} className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                      <div key={idx} className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                         <FileText size={20} className="text-indigo-600" />
                         <span>{doc}</span>
                         <ExternalLink size={16} className="text-gray-400 ml-auto" />
@@ -478,7 +509,7 @@ const HealthcareLLMGovernance = () => {
                       'ONC Health IT Standards',
                       'CMS Innovation Guidelines'
                     ].map((resource, idx) => (
-                      <div key={idx} className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                      <div key={idx} className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                         <FileText size={20} className="text-indigo-600" />
                         <span>{resource}</span>
                         <ExternalLink size={16} className="text-gray-400 ml-auto" />
@@ -495,12 +526,24 @@ const HealthcareLLMGovernance = () => {
         <div className="flex gap-4 mt-8">
           <button
             onClick={generateReport}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
+            disabled={Object.keys(assessmentData).length === 0}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
+              Object.keys(assessmentData).length === 0
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-indigo-600 text-white hover:bg-indigo-700'
+            }`}
           >
             <Download size={20} />
             Generate Report
           </button>
-          <button className="flex items-center gap-2 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">
+          <button 
+            disabled={Object.keys(assessmentData).length === 0}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
+              Object.keys(assessmentData).length === 0
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
             <Users size={20} />
             Share Assessment
           </button>

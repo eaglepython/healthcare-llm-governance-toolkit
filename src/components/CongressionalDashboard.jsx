@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Shield, CheckCircle, FileText, Users, Brain, Database, Settings, Download, ExternalLink, TrendingUp, Building, Globe, Calendar, DollarSign, Scale, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { AlertTriangle, Shield, CheckCircle, FileText, Users, Database, Download, TrendingUp, Building, Globe, Calendar, DollarSign, Scale, Eye } from 'lucide-react';
 
 const CongressionalHealthcareAIDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -143,6 +143,31 @@ const CongressionalHealthcareAIDashboard = () => {
     return 'text-red-600 bg-red-50';
   };
 
+  const generateCongressionalReport = () => {
+    const reportData = {
+      committee: congressionalCommittees.find(c => c.id === selectedCommittee)?.name,
+      reportPeriod: selectedTimeframe,
+      timestamp: new Date().toISOString(),
+      executiveSummary: {
+        totalSystems: industryTrends.totalSystems,
+        patientsAffected: industryTrends.patientsAffected,
+        averageRiskScore: industryTrends.averageRiskScore,
+        criticalIncidents: industryTrends.criticalIncidents
+      },
+      systems: healthcareAISystems,
+      policyRecommendations: policyImpacts,
+      equityAnalysis: demographicAnalysis
+    };
+    
+    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `congressional-healthcare-ai-brief-${selectedTimeframe.toLowerCase()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Congressional Header */}
@@ -174,7 +199,7 @@ const CongressionalHealthcareAIDashboard = () => {
               <select 
                 value={selectedCommittee}
                 onChange={(e) => setSelectedCommittee(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 {congressionalCommittees.map(committee => (
                   <option key={committee.id} value={committee.id}>{committee.name}</option>
@@ -186,14 +211,17 @@ const CongressionalHealthcareAIDashboard = () => {
               <select 
                 value={selectedTimeframe}
                 onChange={(e) => setSelectedTimeframe(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="Q2_2025">Q2 2025</option>
                 <option value="Q1_2025">Q1 2025</option>
                 <option value="Q4_2024">Q4 2024</option>
               </select>
             </div>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+            <button 
+              onClick={generateCongressionalReport}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
               <Download size={16} />
               Generate Congressional Brief
             </button>
@@ -215,7 +243,7 @@ const CongressionalHealthcareAIDashboard = () => {
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`flex items-center gap-2 py-4 px-2 border-b-2 font-medium text-sm ${
+                  className={`flex items-center gap-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === id
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -350,7 +378,7 @@ const CongressionalHealthcareAIDashboard = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {healthcareAISystems.map((system) => (
-                    <tr key={system.id} className="hover:bg-gray-50">
+                    <tr key={system.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-medium text-gray-900">{system.name}</div>
@@ -533,11 +561,41 @@ const CongressionalHealthcareAIDashboard = () => {
           </div>
         )}
 
+        {/* Industry Trends Tab */}
+        {activeTab === 'trends' && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-6">Healthcare AI Industry Trends</h3>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
+                <h4 className="font-semibold text-blue-900 mb-2">Market Growth</h4>
+                <div className="text-3xl font-bold text-blue-600">{industryTrends.growthRate}%</div>
+                <p className="text-sm text-blue-700">Year-over-year growth in healthcare AI adoption</p>
+              </div>
+              
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6">
+                <h4 className="font-semibold text-green-900 mb-2">Compliance Rate</h4>
+                <div className="text-3xl font-bold text-green-600">{industryTrends.complianceRate}%</div>
+                <p className="text-sm text-green-700">Systems meeting all regulatory requirements</p>
+              </div>
+              
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
+                <h4 className="font-semibold text-purple-900 mb-2">New Deployments</h4>
+                <div className="text-3xl font-bold text-purple-600">{industryTrends.newDeployments}</div>
+                <p className="text-sm text-purple-700">New AI systems deployed this quarter</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Action Footer */}
         <div className="flex flex-wrap gap-4 mt-8 p-6 bg-white rounded-lg shadow-md">
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+          <button 
+            onClick={generateCongressionalReport}
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          >
             <Download size={20} />
-            Download Executive Brief (PDF)
+            Download Executive Brief (JSON)
           </button>
           <button className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors">
             <FileText size={20} />
