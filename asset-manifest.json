@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/healthcare-llm-governance-toolkit/static/js/main.070e7efd.js",
+    "index.html": "/healthcare-llm-governance-toolkit/index.html",
+    "main.070e7efd.js.map": "/healthcare-llm-governance-toolkit/static/js/main.070e7efd.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.070e7efd.js"
+  ]
+}
