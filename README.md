@@ -351,7 +351,7 @@ npm run deploy
 
 ## 👨‍💻 **About the Creator**
 
-### **Joseph Bidias** - *AI Governance Researcher & Healthcare Policy Expert*
+### **Joseph Bidias** - *AI Engineer & Architect , Governance Researcher & Healthcare Policy Expert*
 
 Joseph specializes in creating practical policy tools that bridge the gap between cutting-edge AI technology and effective government oversight. His work directly supports Congressional committees in making evidence-based decisions about healthcare AI regulation.
 
