@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/e4e33cf8-456f-4eba-a9f7-27cc66f7a1cb)
+
 # Healthcare LLM Governance Toolkit
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-blue?style=for-the-badge)](https://eaglepython.github.io/healthcare-llm-governance-toolkit)
