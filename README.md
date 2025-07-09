@@ -11,7 +11,7 @@
 > **🏥 The definitive risk assessment and compliance framework for healthcare AI systems**  
 > *Purpose-built for Congressional oversight, regulatory compliance, and industry adoption*
 
-**Created by [Joseph Bidias](https://github.com/eaglepython)** - *AI Governance Researcher & Healthcare Policy Expert*
+**Created by [Joseph Bidias](https://github.com/eaglepython)** - *AI Enginneer $ Architect , Governance Researcher & Healthcare Policy Expert*
 
 ---
 
