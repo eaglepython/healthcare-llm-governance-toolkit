@@ -1,4 +1,5 @@
 ![image](https://github.com/user-attachments/assets/e4e33cf8-456f-4eba-a9f7-27cc66f7a1cb)
+![image](https://github.com/user-attachments/assets/ab9903b2-91e5-454d-a0ae-89c64befb92e)
 
 # Healthcare LLM Governance Toolkit
 
