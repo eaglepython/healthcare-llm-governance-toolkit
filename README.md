@@ -1,12 +1,12 @@
-![image](https://github.com/user-attachments/assets/e4e33cf8-456f-4eba-a9f7-27cc66f7a1cb)
-![image](https://github.com/user-attachments/assets/ab9903b2-91e5-454d-a0ae-89c64befb92e)
-
 # Healthcare LLM Governance Toolkit
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-blue?style=for-the-badge)](https://eaglepython.github.io/healthcare-llm-governance-toolkit)
-[![Congressional Ready](https://img.shields.io/badge/🏛️_Congressional-Ready-red?style=for-the-badge)](https://github.com/eaglepython/healthcare-llm-governance-toolkit)
-[![MIT License](https://img.shields.io/badge/📄_License-MIT-green?style=for-the-badge)](LICENSE)
-[![React](https://img.shields.io/badge/⚛️_React-18.2.0-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+![status](https://img.shields.io/badge/status-prototype-orange) ![license](https://img.shields.io/badge/license-MIT-green) ![built_with](https://img.shields.io/badge/built_with-React-61DAFB) ![styling](https://img.shields.io/badge/styling-Tailwind_CSS-38B2AC)
+
+![Demo screenshot 1](https://github.com/user-attachments/assets/e4e33cf8-456f-4eba-a9f7-27cc66f7a1cb)
+
+![Demo screenshot 2](https://github.com/user-attachments/assets/ab9903b2-91e5-454d-a0ae-89c64befb92e)
+
+*Screenshots of the demo. All figures shown are sample data.*
 
 A front-end prototype that shows what a risk assessment and oversight tool for healthcare AI systems could look like.
 
