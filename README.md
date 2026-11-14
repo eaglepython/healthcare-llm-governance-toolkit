@@ -8,9 +8,6 @@
 [![MIT License](https://img.shields.io/badge/📄_License-MIT-green?style=for-the-badge)](LICENSE)
 [![React](https://img.shields.io/badge/⚛️_React-18.2.0-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 
-
-# Healthcare LLM Governance Toolkit
-
 A front-end prototype that shows what a risk assessment and oversight tool for healthcare AI systems could look like.
 
 **Status: prototype with sample data.** This is a design demo. It is not connected to any data source, it does not monitor real AI systems, and no agency, committee, or company uses it.
