@@ -8,12 +8,6 @@
 [![MIT License](https://img.shields.io/badge/📄_License-MIT-green?style=for-the-badge)](LICENSE)
 [![React](https://img.shields.io/badge/⚛️_React-18.2.0-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 
-> **🏥 The definitive risk assessment and compliance framework for healthcare AI systems**  
-> *Purpose-built for Congressional oversight, regulatory compliance, and industry adoption*
-
-**Created by [Joseph Bidias](https://github.com/eaglepython)** - *AI Enginneer $ Architect , Governance Researcher & Healthcare Policy Expert*
-
----
 
 # Healthcare LLM Governance Toolkit
 
